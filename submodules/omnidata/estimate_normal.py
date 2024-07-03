@@ -30,8 +30,6 @@ parser.set_defaults(store_name='NONE')
 
 args = parser.parse_args()
 
-root_dir = './pretrained_models/'
-
 trans_topil = transforms.ToPILImage()
 
 # print(args.output_path)
@@ -45,9 +43,10 @@ device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
 
 
 if args.task == 'normal':
-    pretrained_weights_path = root_dir + 'omnidata_dpt_normal_v2.ckpt'
+    pretrained_weights_path = "https://huggingface.co/clay3d/omnidata/resolve/main/omnidata_dpt_normal_v2.ckpt"
     model = DPTDepthModel(backbone='vitb_rn50_384', num_channels=3) # DPT Hybrid
-    checkpoint = torch.load(pretrained_weights_path, map_location=map_location)
+    checkpoint = torch.hub.load_state_dict_from_url(pretrained_weights_path, map_location=map_location)
+    #(pretrained_weights_path, map_location=map_location)
     if 'state_dict' in checkpoint:
         state_dict = {}
         for k, v in checkpoint['state_dict'].items():
@@ -59,9 +58,9 @@ if args.task == 'normal':
 
 elif args.task == 'depth':
 
-    pretrained_weights_path = root_dir + 'omnidata_dpt_depth_v2.ckpt'  # 'omnidata_dpt_depth_v1.ckpt'
+    pretrained_weights_path = "https://huggingface.co/clay3d/omnidata/resolve/main/omnidata_dpt_depth_v2.ckpt?download=true"  # 'omnidata_dpt_depth_v1.ckpt'
     model = DPTDepthModel(backbone='vitb_rn50_384') # DPT Hybrid
-    checkpoint = torch.load(pretrained_weights_path, map_location=map_location)
+    checkpoint = torch.hub.load_state_dict_from_url(pretrained_weights_path, map_location=map_location)
     if 'state_dict' in checkpoint:
         state_dict = {}
         for k, v in checkpoint['state_dict'].items():
